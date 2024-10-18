@@ -1,0 +1,177 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Third Party">
+      <UniqueIdentifier>{79fd45b1-0ed7-4fbb-9607-3cfa06c2b9b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Exercises">
+      <UniqueIdentifier>{4983a0f4-4de2-4d44-b5c6-d69c7fb0655d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Exercises">
+      <UniqueIdentifier>{33a6c07e-76e8-4177-940f-a9456779d86f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Chapter Goof">
+      <UniqueIdentifier>{397ba3e2-87ec-46f4-beea-94ec0fbcdce5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Chapter Goof">
+      <UniqueIdentifier>{26b63b38-2454-444e-89d1-eee4c50be3c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Chapter 6">
+      <UniqueIdentifier>{ac1b3377-09f2-425e-acfa-56dff964a9c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Chapter Work">
+      <UniqueIdentifier>{63b1e1a1-4461-481c-91aa-2009998d709a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Chapter Work">
+      <UniqueIdentifier>{09d98e17-041d-4def-9255-db33531a9523}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\External">
+      <UniqueIdentifier>{526efa9c-8b7f-4b6c-b82c-e4effdc5e1ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Chapter 7">
+      <UniqueIdentifier>{25894efc-af76-4737-a2a4-956eede256d2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="glad.c">
+      <Filter>Third Party</Filter>
+    </ClCompile>
+    <ClCompile Include="Exercises_5_8.h">
+      <Filter>Header Files\Exercises</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexArray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Actor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Chapter6Goof_Shaders.cpp">
+      <Filter>Source Files\Chapter Goof</Filter>
+    </ClCompile>
+    <ClCompile Include="_6_5_Attributes.cpp">
+      <Filter>Source Files\Chapter Work</Filter>
+    </ClCompile>
+    <ClCompile Include="Exercises_5_8.cpp">
+      <Filter>Source Files\Exercises</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Exercises_6_8.cpp">
+      <Filter>Source Files\Exercises</Filter>
+    </ClCompile>
+    <ClCompile Include="_7_1_Textures.cpp">
+      <Filter>Source Files\Chapter Work</Filter>
+    </ClCompile>
+    <ClCompile Include="stb_image.cpp">
+      <Filter>Header Files\External</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="VertexArray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Actor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugTests.h">
+      <Filter>Header Files\Exercises</Filter>
+    </ClInclude>
+    <ClInclude Include="Chapter6Goof_Shaders.h">
+      <Filter>Header Files\Chapter Goof</Filter>
+    </ClInclude>
+    <ClInclude Include="_6_5_Attributes.h">
+      <Filter>Header Files\Chapter Work</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Exercises_6_8.h">
+      <Filter>Header Files\Exercises</Filter>
+    </ClInclude>
+    <ClInclude Include="_7_1_Textures.h">
+      <Filter>Header Files\Chapter Work</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>Header Files\External</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="FragmentShader1.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="VertexShader1.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Frag_6_4_Uniforms.frag">
+      <Filter>Resource Files\Chapter 6</Filter>
+    </None>
+    <None Include="Vert_6_4_Uniforms.vert">
+      <Filter>Resource Files\Chapter 6</Filter>
+    </None>
+    <None Include="packages.config" />
+    <None Include="Frag_6_5_Attributes.frag">
+      <Filter>Resource Files\Chapter 6</Filter>
+    </None>
+    <None Include="Vert_6_5_Attributes.vert">
+      <Filter>Resource Files\Chapter 6</Filter>
+    </None>
+    <None Include="Frag_6_8_Exercise1.frag">
+      <Filter>Resource Files\Chapter 6</Filter>
+    </None>
+    <None Include="Vert_6_8_Exercise1.vert">
+      <Filter>Resource Files\Chapter 6</Filter>
+    </None>
+    <None Include="Frag_6_8_Exercise2.frag">
+      <Filter>Resource Files\Chapter 6</Filter>
+    </None>
+    <None Include="Vert_6_8_Exercise2.vert">
+      <Filter>Resource Files\Chapter 6</Filter>
+    </None>
+    <None Include="Frag_6_8_Exercise3.frag">
+      <Filter>Resource Files\Chapter 6</Filter>
+    </None>
+    <None Include="Vert_6_8_Exercise3.vert">
+      <Filter>Resource Files\Chapter 6</Filter>
+    </None>
+    <None Include="Vert_7_6_Applying Textures.vert">
+      <Filter>Resource Files\Chapter 7</Filter>
+    </None>
+    <None Include="Frag_7_6_Applying Textures.frag">
+      <Filter>Resource Files\Chapter 7</Filter>
+    </None>
+  </ItemGroup>
+</Project>
