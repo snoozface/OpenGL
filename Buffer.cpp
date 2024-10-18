@@ -5,11 +5,9 @@ void Buffer::bindBuffer()
 	switch (m_type)
 	{
 	case Type::VBO:
-		std::cout << "bound VBO\n";
 		glBindBuffer(GL_ARRAY_BUFFER, m_bufferID);
 		break;
 	case Type::EBO:
-		std::cout << "bound EBO\n";
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_bufferID);
 		break;
 
