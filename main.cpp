@@ -69,6 +69,8 @@ int main()
 	game.runLoop();
 	game.shutdown();
 
+	std::cout << "hi\n";
+
 	return 0;
 }
 
