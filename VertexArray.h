@@ -43,8 +43,9 @@ public:
 
 
 	// Upload Buffer
-	void uploadVBO(GLsizeiptr size, const void* data, GLenum usage, size_t VBOIndex);
-	void uploadEBO(GLsizeiptr size, const void* data, GLenum usage, size_t EBOIndex);
+	// // Deprecated - Functionality moved to Buffer.h
+	//void uploadVBO(GLsizeiptr size, const void* data, GLenum usage, size_t VBOIndex);
+	//void uploadEBO(GLsizeiptr size, const void* data, GLenum usage, size_t EBOIndex);
 
 	// Get Buffer ID
 

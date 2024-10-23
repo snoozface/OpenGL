@@ -72,8 +72,8 @@ void Game::generateOutput()
 
 
 	// For each loop renders each object in m_actors
-	for (Actor& actor : m_actors)
-		actor.render(GL_TRIANGLES);
+	for (const auto& actor : m_actors)
+		actor.second->render(GL_TRIANGLES);
 
 
 }
@@ -85,8 +85,6 @@ void Game::pollEvents()
 
 size_t Game::addActor()
 {
-	Actor actor{};
-	m_actors.push_back(actor);
-
-	return m_actors.size() - 1;
+	m_actors[m_actorID] = std::make_shared<Actor>(m_actorID);
+	return m_actorID++;
 }
