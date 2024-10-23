@@ -1,8 +1,8 @@
 #include "Renderer.h"
 
-void Renderer::linkVertexAttributes(Actor& actor, GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void* offset)
+void Renderer::linkVertexAttributes(const std::shared_ptr<Actor>& actor, GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void* offset)
 {
-	actor.linkVertexAttributes(location, size, type, normalized, stride, offset);
+	actor->linkVertexAttributes(location, size, type, normalized, stride, offset);
 }
 
 size_t Renderer::addShader()

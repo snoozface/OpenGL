@@ -33,6 +33,8 @@ private:
 public:
 	Actor()
 	{}
+	Actor(size_t ID)
+	{}
 
 	// ***************************************************
 	// Data Management
