@@ -244,7 +244,7 @@ void _7_6_Textures()
 		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,	// bottom left
 		-0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f	// top left
 	};
-	std::vector<float> indices{
+	std::vector<GLuint> indices{
 		0, 1, 3,  // first triangle
 		1, 2, 3   // second triangle
 	};
@@ -272,15 +272,17 @@ void _7_6_Textures()
 	}
 	stbi_image_free(data);
 
-	size_t actor = game.addActor();
-	renderer.bindVAO(game.getActor(actor));
-	size_t VBO = renderer.addVBO(game.getActor(actor));
-	renderer.bindVBO(game.getActor(actor), VBO);
-	renderer.uploadVBO(game.getActor(actor), VBO, vertices);
-	renderer.uploadVertices(game.getActor(actor), vertices);
-	renderer.addEBO(game.getActor(actor));
-	renderer.bindEBO(game.getActor(actor));
-	renderer.uploadEBO(game.getActor(actor), indices);
+	size_t actorID = game.addActor();
+	std::shared_ptr<Actor> actor{ game.getActor(actorID) };
+	renderer.bindVAO(actor);
+	size_t VBO = renderer.addVBO(actor);
+	renderer.bindVBO(actor, VBO);
+	renderer.uploadVBO(actor, VBO, vertices);
+	renderer.uploadVertices(actor, vertices);
+	renderer.addEBO(actor);
+	renderer.bindEBO(actor);
+	renderer.uploadEBO(actor, indices);
+	renderer.uploadIndices(actor, indices);
 
 
 	// create shader
@@ -296,23 +298,21 @@ void _7_6_Textures()
 	// location 0, size 3 (vec3)
 	// stride is 8 because there are vec3 position and vec 3 color and vec2 texCoord
 	// offset is 0 because position is at the beginning 
-	renderer.linkVertexAttributes(game.getActor(actor), 0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	renderer.linkVertexAttributes(actor, 0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 
 	// link color attribute location 1
 	// location 1, size 3
 	// stride is 8 because there are vec3 position and vec 3 color and vec2 texCoord
 	// offset is 3 because color comes after the vec3 position
-	renderer.linkVertexAttributes(game.getActor(actor), 1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	renderer.linkVertexAttributes(actor, 1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 
 	// link texture coordinates attribute location 2
 	// location 2, size 2
 	// stride is 8 because there are vec3 position and vec 3 color and vec2 texCoord
 	// offset is 6 because texCoord comes after vec3 pos and vec3 color
-	renderer.linkVertexAttributes(game.getActor(actor), 2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	renderer.linkVertexAttributes(actor, 2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 
-	renderer.connectShader(game.getActor(actor), shader);
-
-	glBindTexture(GL_TEXTURE_2D, texture);
+	renderer.connectShader(actor, shader);
 
 
 	game.runLoop();

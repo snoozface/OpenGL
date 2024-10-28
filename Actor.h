@@ -31,10 +31,7 @@ private:
 	GLenum m_usage{ GL_STATIC_DRAW };
 
 public:
-	Actor()
-	{}
-	Actor(size_t ID)
-	{}
+	Actor(size_t ID);
 
 	// ***************************************************
 	// Data Management

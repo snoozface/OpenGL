@@ -2,6 +2,11 @@
 
 #include <cmath>
 
+Actor::Actor(size_t ID)
+{
+
+}
+
 void Actor::uploadIndices(std::vector<GLuint> indices)
 {
 	m_indices = indices;
