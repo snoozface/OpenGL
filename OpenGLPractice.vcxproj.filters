@@ -90,6 +90,12 @@
     <ClCompile Include="stb_image.cpp">
       <Filter>Header Files\External</Filter>
     </ClCompile>
+    <ClCompile Include="EBO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VBO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VertexArray.h">
@@ -127,6 +133,12 @@
     </ClInclude>
     <ClInclude Include="stb_image.h">
       <Filter>Header Files\External</Filter>
+    </ClInclude>
+    <ClInclude Include="EBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VBO.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -172,6 +184,9 @@
     </None>
     <None Include="Frag_7_6_Applying Textures.frag">
       <Filter>Resource Files\Chapter 7</Filter>
+    </None>
+    <None Include="BufferTemplate.cpp">
+      <Filter>Source Files</Filter>
     </None>
   </ItemGroup>
 </Project>

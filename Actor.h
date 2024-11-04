@@ -3,6 +3,11 @@
 
 #include "Shader.h"
 #include "VertexArray.h"
+#include "VBO.h"
+#include "EBO.h"
+
+#include <memory>			// for std::shared_ptr
+#include <unordered_map>	// for std::unordered_map
 
 class Actor
 {
@@ -12,132 +17,189 @@ public:
 		Elements
 	};
 private:
-	VertexArray m_VAO{};	// VAO is automatically made for each actor when actor is made
-	std::vector<Buffer> m_VBOs{};
-	Buffer m_EBO{};
+
+	//*******************************************************************************
+	//*******************************************************************************
+	// Member Variables
+
+	// VAO - automatically generated and owned by Actor
+	VertexArray m_VAO{};
+
+	//*******************************************************************************
+	// ****Buffers****
+	// 
+	// All buffers are generated in Actor constructor
+
+	// Unordered Map of Base Class Buffer Pointers
+	// Contains EBO and all VBOs
+	std::unordered_map<Buffer::Type, std::shared_ptr<Buffer>> m_buffers;
+
+	// EBO
+	std::shared_ptr<EBO> m_EBO;
+
+	// Position VBO
+	std::shared_ptr<VBO> m_VBOPos;
+
+	// Color VBO
+	std::shared_ptr<VBO> m_VBOColor;
+
+	// TexCoord VBO
+	std::shared_ptr<VBO> m_VBOTexCoord;
+
+	// m_count contains the number of vertices in the buffer
+	// m_count = m_VBOPos.size() / 3 because each vertex has 3 components
+	// Set by Actor::uploadBuffers()
+	// Used for glDrawArrays count argument
+	GLsizei m_count{};
+
+	//*******************************************************************************
+	// ****Rendering****
+
+	// Pointer to shader used by Actor
+	// Must be set by Actor::connectShader before calling Actor::render
 	Shader* m_shader{ nullptr };
 
 	// DrawType used to select DrawArrays or DrawElements
-	// Arrays by default, changes to Elements if uploadIndicies() is called
+	// Arrays by default, changes to Elements if Actor::uploadBuffer
+	// or Actor::uploadBuffers are called
 	DrawType m_drawType{ Arrays };		
-	std::vector<float> m_vertices{};	// Vertex location data
-	std::vector<GLuint> m_indices{};	// Element array indices
 
-	// glBufferData 
+
+	// Variables used for glBufferData (Buffer::uploadBuffer)
 	// usage: STREAM, STATIC, or DYNAMIC
 	// nature: DRAW, READ, COPY
 	// GL_STATIC_DRAW by default, use setter to change
-	// usage is used by uploadVBO()
+	// Passed to Buffer through Actor::uploadBuffer and Actor::uploadBuffers
 	GLenum m_usage{ GL_STATIC_DRAW };
 
 public:
-	Actor(size_t ID);
+
+	//*******************************************************************************
+	//*******************************************************************************
+	// Member Functions
+
+	/*
+	* Actor() Constructor
+	* 
+	* Generates VAO and all Buffers
+	* Populates m_buffers with std::shared_ptr<Buffer> to each Buffer
+	*/
+	Actor();
+
+
+	// ***************************************************
+	// Getters
+
+	std::shared_ptr<EBO> getEBOPointer() const { return m_EBO; }
+	std::shared_ptr<VBO> getVBOPointer(Buffer::Type type) const;
+
 
 	// ***************************************************
 	// Data Management
 
-	// Upload Vertices
-	void uploadVertices(std::vector<float> vertices) { m_vertices = vertices; }
 
-	// Upload Indices
-	// Sets m_drawType to Elements which causes drawElements to be used instead of drawArrays
-	void uploadIndices(std::vector<GLuint> indices);
-
-	// Connect to Shader
-	void connectShader(Shader* shader) { m_shader = shader; }
-
-	// Upload data to Uniform, This is a function for chapter 6.4 uniforms only!
-	// Delete if this program ever becomes a thing
-	void uploadUniform();
-
-	// ***************************************************
-	// Render
-
-	void render(GLenum mode);
-
-private:
-	// drawArrays is called by render() if data was not sent to m_indicies with uploadIndicies()
-	void drawArrays(GLenum mode);
-
-	// drawElements is called by render() if data was sent to m_indicies with uploadIndicies()
-	void drawElements(GLenum mode);
-
-public:
 	// ***************************************************
 	// VAO
 
+private:
 	// Bind/Unbind VAO
 	void bindVAO() { m_VAO.bindVAO(); }
 	void unbindVAO() { m_VAO.unbindVAO(); }
 
+public:
 	// Link Vertex Attributes
-	void linkVertexAttributes(GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void* offset);
+	void linkVertexAttributes(Buffer::Type bufferType, GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void* offset);
 
-	// Get VAO ID
-	GLuint getVAO() { return m_VAO.getID(); }
+	// VAO Getters
+	GLuint getVAOID() { return m_VAO.getID(); }
+	const VertexArray& getVAO() const { return m_VAO; }
+
 
 	// ***************************************************
 	// Buffers
 
-	// ***************************************************
-	// VBO
+private:
+	// Bind/Unbind Buffer
+	void bindBuffer(Buffer::Type type);
 
-	// Add VBO
-	size_t addVBO();
-
-	// Bind/Unbind VBO
-	void bindVBO(size_t VBOIndex) { m_VBOs[VBOIndex].bindBuffer(); }
-	void unbindVBO(size_t VBOIndex) { m_VBOs[VBOIndex].unbindBuffer(); }
-
-	// Upload Buffer
-	//void uploadVBO(size_t VBOIndex, GLsizeiptr size, const void* data, GLenum usage);
-	//void uploadVBO(size_t VBOIndex, std::vector<float>& vertices);
+public:
+	// uploadBuffer
+	// This function uploads one buffer individually
+	// Probably... hasn't been tested....
 	template <typename T>
-	void uploadVBO(size_t VBOIndex, std::vector<T>& vector)
+	void uploadBuffer(Buffer::Type type, std::vector<T> data)
 	{
-		m_VBOs[VBOIndex].uploadBuffer(vector, m_usage);
+		m_VAO.bindVAO();
+		switch (type)
+		{
+		case Buffer::Type::EBO:
+			m_drawType = Elements;
+			m_EBO->bindBuffer();
+			m_EBO->uploadBuffer(data, m_usage);
+			break;
+		case Buffer::Type::VBOPos:
+			m_VBOPos->bindBuffer();
+			m_VBOPos->uploadBuffer(data, m_usage);
+			break;
+		case Buffer::Type::VBOColor:
+			m_VBOColor->bindBuffer();
+			m_VBOColor->uploadBuffer(data, m_usage);
+			break;
+		case Buffer::Type::VBOTexCoord:
+			m_VBOTexCoord->bindBuffer();
+			m_VBOTexCoord->uploadBuffer(data, m_usage);
+			break;
+		default:
+			std::cerr << "ERROR: Actor::uploadBuffer() called with invalid Type\n";
+			break;
+		}
 	}
 
-	// Get VBO ID
-	GLuint getVBOID(size_t VBOIndex) { return m_VBOs[VBOIndex].getID(); }
+	/*
+	* uploadBuffers
+	* This function uploads all buffers at once
+	* 
+	* If not using an EBO, must use std::vector<int>() as first
+	* parameter.
+	* 
+	* Sets m_count to the amount of vertices in posData
+	* Takes separate data vectors for each buffer
+	*/
+	void uploadBuffers(const std::vector<int>& eboData = std::vector<int>(),
+		const std::vector<float>& posData = std::vector<float>(),
+		const std::vector<float>& colorData = std::vector<float>(),
+		const std::vector<float>& texCoordData = std::vector<float>());
 
 
 	// ***************************************************
-	// EBO
+	// Shader
 
-	// Add EBO
-	void addEBO() { m_EBO = { Buffer::Type::EBO }; }
+public:
+	// Link Shader Program to this Actor
+	void connectShader(Shader* shader) { m_shader = shader; }
 
-	// Bind/Unbind EBO
-	void bindEBO() { m_EBO.bindBuffer(); }
-	void unbindEBO() { m_EBO.unbindBuffer(); }
 
-	// Upload Buffer
-	// usage is set by m_usage
-	//void uploadEBO(GLsizeiptr size, const void* data, GLenum usage);
-	template <typename T>
-	void uploadEBO(std::vector<T>& vector)
-	{
-		m_EBO.uploadBuffer(vector, m_usage);
-	}
+	//*******************************************************************************
+	// ******************************************************************************
+	// Rendering Functions
 
-	// Get EBO ID
-	GLuint getEBOID() { return m_EBO.getID(); }
+public:
+	void render(GLenum mode);
 
-	// ***************************************************
+private:
+	// drawArrays is called by render() if no data was uploaded to EBO
+	void drawArrays(GLenum mode);
+
+	// drawElements is called by render() if data was uploaded to EBO
+	void drawElements(GLenum mode);
+
+
+	//*******************************************************************************
+	// ******************************************************************************
 	// glBufferData
+public:
 	GLenum getUsage() { return m_usage; }
 	void setUsage(GLenum usage) { m_usage = usage; }
-
-
-
-
-
-	// Debug only?
-	// Get Buffer Type
-	std::string getVBOType(size_t VBOIndex) { return m_VBOs[VBOIndex].getType(); }
-	std::string getEBOType() { return m_EBO.getType(); }
-
 };
 
 #endif
