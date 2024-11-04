@@ -5,78 +5,65 @@
 #include <glfw3.h>
 
 #include <iostream>
+#include <type_traits>		// for std::is_same_v
 #include <vector>
+
 
 class Buffer
 {
 public:
 	enum Type
 	{
-		VBO,
-		EBO
+		EBO,
+		VBOPos,
+		VBOColor,
+		VBOTexCoord,
+		MaxBuffers
 	};
-private:
-	GLuint m_bufferID{};
+protected:
+	GLuint m_ID{};
 	Type m_type{};
 
 public:
-	Buffer()
-	{}
-
 	Buffer(Type type)
 		: m_type{ type }
 	{
-		glGenBuffers(1, &m_bufferID);
+		glGenBuffers(1, &m_ID);
 	}
+
+
+	GLuint getID() const { return m_ID; }
+	Type getType() const { return m_type; }
 
 	// Bind/Unbind Buffer
 	void bindBuffer();
 	void unbindBuffer();
 
-	// Upload Buffer Data
-	//void uploadBuffer(GLsizeiptr size, const void* data, GLenum usage);
-	//template <typename T>
-	//void uploadBuffer(std::vector<T> &vector, GLenum usage);
 
+	/*
+	* uploadBuffer
+	* 
+	* Param std::vector<T> data for EBO or VBO data
+	* 
+	* If data is vector<int>, function calls EBO::uploadIntData() and uploads to the EBO
+	* If data is vector<float>, function calls VBO::uploadFloatData() and uploads to the VBO
+	* 
+	* uploadBuffer definition is in BufferTemplate.cpp
+	*/
+public:
 	template <typename T>
-	void uploadBuffer(std::vector<T>& vector, GLenum usage)
-	{
-		switch (m_type)
-		{
-		case Type::VBO:
-			glBufferData(GL_ARRAY_BUFFER, vector.size() * sizeof(T), vector.data(), usage);
-			break;
-		case Type::EBO:
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, vector.size() * sizeof(T), vector.data(), usage);
-			break;
-
-		default:
-			std::cerr << "ERROR: Buffer::uploadBuffer() Attempted to upload to buffer with incorrect type\n";
-			break;
-		}
-	}
-
-	// Get Buffer ID
-	GLuint getID() { return m_bufferID; }
+	void uploadBuffer(const std::vector<T>& data, GLenum usage);
+private:
+	virtual void uploadIntData(const std::vector<int>& data, GLenum usage) {}
+	virtual void uploadFloatData(const std::vector<float>& data, GLenum usage) {}
 
 
-
-
-
-	// Debug only?
-	// Get Buffer Type
-	std::string getType()
-	{
-		switch (m_type)
-		{
-		case Type::VBO:
-			return "VBO";
-		case Type::EBO:
-			return "EBO";
-		default:
-			return "ERROR::INCORECT TYPE";
-		}
-	}
+	// Debug function - getType
+	// Returns std::string_view of Buffer Type
+	std::string_view getTypeName() const;
 };
+
+#include "BufferTemplate.cpp"
+
 
 #endif

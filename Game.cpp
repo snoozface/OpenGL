@@ -85,6 +85,6 @@ void Game::pollEvents()
 
 size_t Game::addActor()
 {
-	m_actors[m_actorID] = std::make_shared<Actor>(m_actorID);
+	m_actors[m_actorID] = std::make_shared<Actor>();
 	return m_actorID++;
 }

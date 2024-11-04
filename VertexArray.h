@@ -9,8 +9,6 @@ class VertexArray
 {
 private:
 	GLuint m_VAOID{};
-	std::vector<Buffer> m_VBOs{};
-	std::vector<Buffer> m_EBOs{};
 
 public:
 	VertexArray()
@@ -23,36 +21,14 @@ public:
 	void unbindVAO() { glBindVertexArray(0); }
 
 	// Link Vertex Attributes
-	void linkVertexAttributes(GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void* offset);
+	void linkVertexAttributes(GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void* offset) const;
 
 	// Get VAO ID
 	GLuint getID() { return m_VAOID; }
 
 	// Set VAO ID
-	void setID(GLuint ID) { m_VAOID = ID; }
+	void setID(GLuint ID) { m_VAOID = ID; }		// Check this function... why is it here? what is it for?
 
-
-	// ***************************************************
-	// Manage Buffers
-
-	// Add Buffer
-	
-
-
-	// Bind/Unbind Buffer
-
-
-	// Upload Buffer
-	// // Deprecated - Functionality moved to Buffer.h
-	//void uploadVBO(GLsizeiptr size, const void* data, GLenum usage, size_t VBOIndex);
-	//void uploadEBO(GLsizeiptr size, const void* data, GLenum usage, size_t EBOIndex);
-
-	// Get Buffer ID
-
-
-
-	// Debug only?
-	// Get Buffer Type
 
 };
 

@@ -1,8 +1,9 @@
 #include "Renderer.h"
 
-void Renderer::linkVertexAttributes(const std::shared_ptr<Actor>& actor, GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void* offset)
+
+void Renderer::linkVertexAttributes(const VertexArray& vao, GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void* offset)
 {
-	actor->linkVertexAttributes(location, size, type, normalized, stride, offset);
+	vao.linkVertexAttributes(location, size, type, normalized, stride, offset);
 }
 
 size_t Renderer::addShader()
@@ -34,14 +35,3 @@ void Renderer::setUniformFloat4(size_t shaderIndex, const std::string& name, flo
 	m_shaders[shaderIndex].setUniformFloat4(name, value1, value2, value3, value4);
 }
 
-void Renderer::setWireframe(bool wire)
-{
-	if (wire)
-	{
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	}
-	else
-	{
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	}
-}
