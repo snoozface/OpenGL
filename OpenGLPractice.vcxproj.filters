@@ -96,6 +96,9 @@
     <ClCompile Include="VBO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VertexArray.h">
@@ -138,6 +141,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="VBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -187,6 +193,18 @@
     </None>
     <None Include="BufferTemplate.cpp">
       <Filter>Source Files</Filter>
+    </None>
+    <None Include="Frag_7_7_Texture Units.frag">
+      <Filter>Resource Files\Chapter 7</Filter>
+    </None>
+    <None Include="Vert_7_7_Texture Units.vert">
+      <Filter>Resource Files\Chapter 7</Filter>
+    </None>
+    <None Include="Frag_7_8_Variable Mix.frag">
+      <Filter>Resource Files\Chapter 7</Filter>
+    </None>
+    <None Include="Vert_7_8_Variable Mix.vert">
+      <Filter>Resource Files\Chapter 7</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -32,6 +32,7 @@ public:
 	// Uniform Functions
 
 	// Uniform setters
+	void setUniformInt1(const std::string& name, int value);
 	void setUniformFloat1(const std::string& name, float value);
 	void setUniformFloat4(const std::string& name, float value1, float value2, float value3, float value4);
 

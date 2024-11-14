@@ -35,6 +35,11 @@ bool Shader::createShaderProgram(std::string vertexShaderSource, std::string fra
     return true;
 }
 
+void Shader::setUniformInt1(const std::string& name, int value)
+{
+	glUniform1i(glGetUniformLocation(m_shaderProgram, name.c_str()), value);
+}
+
 void Shader::setUniformFloat1(const std::string& name, float value)
 {
 	glUniform1f(glGetUniformLocation(m_shaderProgram, name.c_str()), value);

@@ -58,6 +58,8 @@ void Game::processInput()
 	{
 		glfwSetWindowShouldClose(m_window, true);
 	}
+
+
 }
 
 void Game::updateProgram()
