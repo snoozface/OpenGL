@@ -161,6 +161,7 @@
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="stb_image.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="VBO.cpp" />
     <ClCompile Include="VertexArray.cpp" />
     <ClCompile Include="_6_5_Attributes.cpp">
@@ -168,8 +169,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="_7_1_Textures.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -186,6 +187,7 @@
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="stb_image.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="VBO.h" />
     <ClInclude Include="VertexArray.h" />
     <ClInclude Include="_6_5_Attributes.h">
@@ -193,8 +195,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="_7_1_Textures.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -206,6 +208,8 @@
     <None Include="Frag_6_8_Exercise2.frag" />
     <None Include="Frag_6_8_Exercise3.frag" />
     <None Include="Frag_7_6_Applying Textures.frag" />
+    <None Include="Frag_7_7_Texture Units.frag" />
+    <None Include="Frag_7_8_Variable Mix.frag" />
     <None Include="packages.config" />
     <None Include="VertexShader1.vert" />
     <None Include="Vert_6_4_Uniforms.vert" />
@@ -214,6 +218,8 @@
     <None Include="Vert_6_8_Exercise2.vert" />
     <None Include="Vert_6_8_Exercise3.vert" />
     <None Include="Vert_7_6_Applying Textures.vert" />
+    <None Include="Vert_7_7_Texture Units.vert" />
+    <None Include="Vert_7_8_Variable Mix.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

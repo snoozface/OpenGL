@@ -2,12 +2,18 @@
 #define ACTOR_H
 
 #include "Shader.h"
+#include "Texture.h"
 #include "VertexArray.h"
 #include "VBO.h"
 #include "EBO.h"
 
+#include "stb_image.h"
+
 #include <memory>			// for std::shared_ptr
 #include <unordered_map>	// for std::unordered_map
+
+
+#include <string>
 
 class Actor
 {
@@ -53,6 +59,20 @@ private:
 	GLsizei m_count{};
 
 	//*******************************************************************************
+	// ****Textures****
+
+	// Vector of Textures
+	std::vector<Texture> m_textures;
+
+	// Variable m_maxTextureUnits holds the maximum amount of texture units
+	// which varies based on GPU
+	// m_maxTextureUnits is set once upon creation of the first Actor made
+	// during runtime
+	static size_t m_maxTextureUnits;
+	static bool m_isFirstActor;
+
+
+	//*******************************************************************************
 	// ****Rendering****
 
 	// Pointer to shader used by Actor
@@ -74,6 +94,14 @@ private:
 
 public:
 
+	void printTexture()
+	{
+		for (Texture& texture : m_textures)
+		{
+			std::cout << "Texture ID: " << texture.getID() << '\n';
+		}
+	}
+
 	//*******************************************************************************
 	//*******************************************************************************
 	// Member Functions
@@ -85,6 +113,7 @@ public:
 	* Populates m_buffers with std::shared_ptr<Buffer> to each Buffer
 	*/
 	Actor();
+	~Actor();
 
 
 	// ***************************************************
@@ -96,6 +125,66 @@ public:
 
 	// ***************************************************
 	// Data Management
+
+	// ***************************************************
+	// Textures
+	
+	// Add Texture
+	void addTexture(std::string_view texFile, GLint wrapS, GLint wrapT, GLint minFilter, GLint magFilter, GLenum format)
+	{
+		if (m_textures.size() < m_maxTextureUnits)
+		{
+			Texture texture(texFile, wrapS, wrapT, minFilter, magFilter, format);
+			m_textures.emplace_back(texture);
+		}
+		else
+		{
+			std::cerr << "ERROR: Actor::addTexture: New texture not added. Max amount already reached.\n";
+		}
+
+	}
+
+
+	/*
+	* This function is used to set the uniforms of all textures at once
+	* Use function after all textures have been added with Actor::addTexture()
+	* 
+	* Requires the following uniforms to be in the fragment shader:
+	* uniform sampler2D textures[16];
+	* uniform int numTextures;
+	*/
+	void setTextureUniforms()
+	{
+		m_shader->useShaderProgram();
+		m_shader->setUniformInt1("numTextures", static_cast<int>(m_textures.size()));
+
+		for (size_t i = 0; i < m_textures.size(); ++i)
+		{
+			glActiveTexture(GL_TEXTURE0 + static_cast<GLenum>(i));
+			glBindTexture(GL_TEXTURE_2D, m_textures[i].getID());
+			std::string samplerName = "textures[" + std::to_string(i) + "]";
+			m_shader->setUniformInt1(samplerName, static_cast<GLint>(i));
+		}
+	}
+
+	// Bind/Unbind Textures
+	void bindTextures()
+	{
+		for (size_t i{0}; i < m_textures.size(); ++i)
+		{
+			glActiveTexture(GL_TEXTURE0 + static_cast<GLenum>(i));
+			glBindTexture(GL_TEXTURE_2D, m_textures[i].getID());
+		}
+	}
+	void unbindTextures()
+	{
+		for (size_t i{ 0 }; i < m_textures.size(); ++i)
+		{
+			glActiveTexture(GL_TEXTURE0 + static_cast<GLenum>(i));
+			glBindTexture(GL_TEXTURE_2D, 0);
+		}
+	}
+
 
 
 	// ***************************************************
@@ -201,5 +290,7 @@ public:
 	GLenum getUsage() { return m_usage; }
 	void setUsage(GLenum usage) { m_usage = usage; }
 };
+
+
 
 #endif

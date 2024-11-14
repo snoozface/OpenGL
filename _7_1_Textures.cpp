@@ -234,87 +234,199 @@ void _7_1_Textures()
 
 void _7_6_Textures()
 {
-	Game game;
-	game.initialize();
-	Renderer renderer;
-	std::vector<float> vertices{
-		// positions		// colors		  // texture coords
-		 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,	// top right
-		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,	// bottom right
-		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,	// bottom left
-		-0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f	// top left
+	std::vector<float> posData{
+		0.5f,  0.5f, 0.0f, 	// top right
+		0.5f, -0.5f, 0.0f,		// bottom right
+	   -0.5f, -0.5f, 0.0f,		// bottom left
+	   -0.5f,  0.5f, 0.0f		// top left
 	};
-	std::vector<GLuint> indices{
+	std::vector<float> colorData{
+		1.0f, 0.0f, 0.0f,	// top right
+		0.0f, 1.0f, 0.0f,	// bottom right
+		0.0f, 0.0f, 1.0f,	// bottom left
+		1.0f, 1.0f, 0.0f,	// top left
+	};
+	std::vector<float> texCoordData{
+		1.0f, 1.0f,	// top right
+		1.0f, 0.0f,	// bottom right
+		0.0f, 0.0f,	// bottom left
+		0.0f, 1.0f	// top left
+	};
+	std::vector<int> eboData{
 		0, 1, 3,  // first triangle
 		1, 2, 3   // second triangle
 	};
 
-	// Generate Texture
-	unsigned int texture;
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	// set the texture wrapping/filtering options (on currently bound texture)
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	// load and generate the texture
-	int width, height, nrChannels;
-	unsigned char* data = stbi_load("textures/container.jpg", &width, &height, &nrChannels, 0);
-	if (data)
-	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else
-	{
-		std::cout << "Failed to load texture" << std::endl;
-	}
-	stbi_image_free(data);
+	Game game;
+	game.initialize();
+	Renderer renderer;
+
+	
 
 	size_t actorID = game.addActor();
-	std::shared_ptr<Actor> actor{ game.getActor(actorID) };
-	renderer.bindVAO(actor);
-	size_t VBO = renderer.addVBO(actor);
-	renderer.bindVBO(actor, VBO);
-	renderer.uploadVBO(actor, VBO, vertices);
-	renderer.uploadVertices(actor, vertices);
-	renderer.addEBO(actor);
-	renderer.bindEBO(actor);
-	renderer.uploadEBO(actor, indices);
-	renderer.uploadIndices(actor, indices);
+	const auto& rActor = game.getActor(actorID);
+	rActor->uploadBuffers(eboData, posData, colorData, texCoordData);
+	rActor->addTexture("textures/container.jpg", GL_REPEAT, GL_REPEAT, GL_LINEAR, GL_LINEAR, GL_RGB);
 
 
 	// create shader
-	size_t shader = renderer.addShader();
-	renderer.createShaderProgram("Vert_7_6_Applying Textures.vert", "Frag_7_6_Applying Textures.frag", shader);
-	renderer.useShaderProgram(shader);
+	size_t shaderIndex = renderer.addShader();
+	Shader& rShader = renderer.getShader(shaderIndex);
+	renderer.createShaderProgram("Vert_7_6_Applying Textures.vert", "Frag_7_6_Applying Textures.frag", shaderIndex);
+	rActor->connectShader(&rShader);
 
 
 
 	// have to link THREE attributes because the vertex shader has three attributes, one for pos and one for color, one for texCoords
 
 	// link position attribute location 0
-	// location 0, size 3 (vec3)
-	// stride is 8 because there are vec3 position and vec 3 color and vec2 texCoord
-	// offset is 0 because position is at the beginning 
-	renderer.linkVertexAttributes(actor, 0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	rActor->linkVertexAttributes(Buffer::VBOPos, 0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
 	// link color attribute location 1
-	// location 1, size 3
-	// stride is 8 because there are vec3 position and vec 3 color and vec2 texCoord
-	// offset is 3 because color comes after the vec3 position
-	renderer.linkVertexAttributes(actor, 1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	rActor->linkVertexAttributes(Buffer::VBOColor, 1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
 	// link texture coordinates attribute location 2
-	// location 2, size 2
-	// stride is 8 because there are vec3 position and vec 3 color and vec2 texCoord
-	// offset is 6 because texCoord comes after vec3 pos and vec3 color
-	renderer.linkVertexAttributes(actor, 2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	rActor->linkVertexAttributes(Buffer::VBOTexCoord, 2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
 
-	renderer.connectShader(actor, shader);
+
+
 
 
 	game.runLoop();
 	game.shutdown();
 }
+
+void _7_7_TextureUnits()
+{
+	std::vector<float> posData{
+		 0.5f,  0.5f, 0.0f, 	// top right
+		 0.5f, -0.5f, 0.0f,		// bottom right
+		-0.5f, -0.5f, 0.0f,		// bottom left
+		-0.5f,  0.5f, 0.0f		// top left
+	};
+	std::vector<float> colorData{
+		1.0f, 0.0f, 0.0f,	// top right
+		0.0f, 1.0f, 0.0f,	// bottom right
+		0.0f, 0.0f, 1.0f,	// bottom left
+		1.0f, 1.0f, 0.0f,	// top left
+	};
+	std::vector<float> texCoordData{
+		1.0f, 1.0f,	// top right
+		1.0f, 0.0f,	// bottom right
+		0.0f, 0.0f,	// bottom left
+		0.0f, 1.0f	// top left
+	};
+	std::vector<int> eboData{
+		0, 1, 3,  // first triangle
+		1, 2, 3   // second triangle
+	};
+
+	Game game;
+	game.initialize();
+	Renderer renderer;
+
+	// create shader
+	size_t shaderIndex = renderer.addShader();
+	Shader& rShader = renderer.getShader(shaderIndex);
+	renderer.createShaderProgram("Vert_7_7_Texture Units.vert", "Frag_7_7_Texture Units.frag", shaderIndex);
+
+	size_t actorID = game.addActor();
+	const auto& rActor = game.getActor(actorID);
+	rActor->connectShader(&rShader);
+	rActor->uploadBuffers(eboData, posData, colorData, texCoordData);
+	rActor->addTexture("textures/container.jpg", GL_REPEAT, GL_REPEAT, GL_LINEAR, GL_LINEAR, GL_RGB);
+	rActor->addTexture("textures/awesomeface.png", GL_REPEAT, GL_REPEAT, GL_LINEAR, GL_LINEAR, GL_RGBA);
+ 	rActor->setTextureUniforms();
+
+
+
+
+	
+
+
+	// have to link THREE attributes because the vertex shader has three attributes, one for pos and one for color, one for texCoords
+
+	// link position attribute location 0
+	rActor->linkVertexAttributes(Buffer::VBOPos, 0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
+	// link color attribute location 1
+	rActor->linkVertexAttributes(Buffer::VBOColor, 1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
+	// link texture coordinates attribute location 2
+	rActor->linkVertexAttributes(Buffer::VBOTexCoord, 2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+
+
+
+
+
+	game.runLoop();
+	game.shutdown();
+}
+
+void _7_8_Exercises()
+{
+	std::vector<float> posData{
+		0.5f,  0.5f, 0.0f, 	// top right
+		0.5f, -0.5f, 0.0f,		// bottom right
+		-0.5f, -0.5f, 0.0f,		// bottom left
+		-0.5f,  0.5f, 0.0f		// top left
+	};
+	std::vector<float> colorData{
+		1.0f, 0.0f, 0.0f,	// top right
+		0.0f, 1.0f, 0.0f,	// bottom right
+		0.0f, 0.0f, 1.0f,	// bottom left
+		1.0f, 1.0f, 0.0f,	// top left
+	};
+	std::vector<float> texCoordData{
+		1.0f, 1.0f,	// top right
+		1.0f, 0.0f,	// bottom right
+		0.0f, 0.0f,	// bottom left
+		0.0f, 1.0f	// top left
+	};
+	std::vector<int> eboData{
+		0, 1, 3,  // first triangle
+		1, 2, 3   // second triangle
+	};
+
+	Game game;
+	game.initialize();
+	Renderer renderer;
+
+	// create shader
+	size_t shaderIndex = renderer.addShader();
+	Shader& rShader = renderer.getShader(shaderIndex);
+	renderer.createShaderProgram("Vert_7_8_Variable Mix.vert", "Frag_7_8_Variable Mix.frag", shaderIndex);
+
+	size_t actorID = game.addActor();
+	const auto& rActor = game.getActor(actorID);
+	rActor->connectShader(&rShader);
+	rActor->uploadBuffers(eboData, posData, colorData, texCoordData);
+	rActor->addTexture("textures/container.jpg", GL_MIRRORED_REPEAT, GL_REPEAT, GL_LINEAR, GL_NEAREST, GL_RGB);
+	rActor->addTexture("textures/awesomeface.png", GL_MIRRORED_REPEAT, GL_REPEAT, GL_LINEAR, GL_NEAREST, GL_RGBA);
+	rActor->setTextureUniforms();
+
+
+
+
+
+
+
+	// have to link THREE attributes because the vertex shader has three attributes, one for pos and one for color, one for texCoords
+
+	// link position attribute location 0
+	rActor->linkVertexAttributes(Buffer::VBOPos, 0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
+	// link color attribute location 1
+	rActor->linkVertexAttributes(Buffer::VBOColor, 1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
+	// link texture coordinates attribute location 2
+	rActor->linkVertexAttributes(Buffer::VBOTexCoord, 2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+
+
+
+
+
+	game.runLoop();
+	game.shutdown();
+}
+

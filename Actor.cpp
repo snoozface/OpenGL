@@ -2,8 +2,29 @@
 
 #include <cmath>
 
+// Static variable initializations
+
+// Variable m_maxTextureUnits holds the maximum amount of texture units
+// which varies based on GPU
+// m_maxTextureUnits is set once upon creation of the first Actor made
+// during runtime
+// Changed to default to 16 instead of max for GPU
+size_t Actor::m_maxTextureUnits = 16;
+bool Actor::m_isFirstActor = true;
+
+// Constructor
 Actor::Actor()
 {
+	// Get max number of texture units if it's the first Actor constructed
+	// Not currently using, set max number of textures to 16 to suit fragment shader texture array
+	//if (m_isFirstActor)
+	//{
+	//	GLint maxTextureUnits;
+	//	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &maxTextureUnits);
+	//	m_maxTextureUnits = static_cast<size_t>(maxTextureUnits);
+	//	m_isFirstActor = false;
+	//}
+
 	// Create Shared Pointers to Derived Buffer Class Objects
 	m_EBO = std::make_shared<EBO>(Buffer::Type::EBO);
 	m_VBOPos = std::make_shared<VBO>(Buffer::Type::VBOPos);
@@ -14,6 +35,12 @@ Actor::Actor()
 	m_buffers[Buffer::Type::VBOPos] = { m_VBOPos };
 	m_buffers[Buffer::Type::VBOColor] = { m_VBOColor };
 	m_buffers[Buffer::Type::VBOTexCoord] = { m_VBOTexCoord };
+}
+
+Actor::~Actor()
+{
+	for (Texture& texture : m_textures)
+		glDeleteTextures(1, texture.getIDPointer());
 }
 
 std::shared_ptr<VBO> Actor::getVBOPointer(Buffer::Type type) const
@@ -133,6 +160,7 @@ void Actor::render(GLenum mode)
 {
 	m_VAO.bindVAO();
 	m_shader->useShaderProgram();
+	bindTextures();
 
 	switch (m_drawType)
 	{
@@ -148,6 +176,7 @@ void Actor::render(GLenum mode)
 	}
 
 	m_VAO.unbindVAO();
+	unbindTextures();
 }
 
 void Actor::drawArrays(GLenum mode)
